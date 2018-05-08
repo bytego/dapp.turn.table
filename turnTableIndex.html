@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>剪刀石头布</title>
+    <title>星云大转盘</title>
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://testnet.nebulas.io">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,11 +18,123 @@
     <link href="style.css" rel="stylesheet">
 </head>
 <body>
+<style type="text/css">
+    .fix {
+        *zoom: 1
+    }
 
+    .fix:after {
+        display: table;
+        content: '';
+        clear: both;
+    }
+
+    .l {
+        float: left;
+    }
+
+    .r {
+        float: right;
+    }
+
+    body {
+
+    }
+
+    .text {
+        width: 300px;
+        height: 200px;
+        background-image: -webkit-linear-gradient(left, blue, #66ffff 10%, #cc00ff 20%, #CC00CC 30%, #CCCCFF 40%, #00FFFF 50%, #CCCCFF 60%, #CC00CC 70%, #CC00FF 80%, #66FFFF 90%, blue 100%);
+        -webkit-text-fill-color: transparent; /* 将字体设置成透明色 */
+        -webkit-background-clip: text; /* 裁剪背景图，使文字作为裁剪区域向外裁剪 */
+        -webkit-background-size: 200% 100%;
+        -webkit-animation: masked-animation 4s linear infinite;
+    }
+
+    @keyframes masked-animation {
+        0% {
+            background-position: 0 0;
+        }
+        100% {
+            background-position: -100% 0;
+        }
+    }
+
+    .rotateBg {
+        margin: auto;
+        text-align: center;
+        position: relative;
+    }
+
+    .arrow {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin: -107px;
+        cursor: pointer;
+    }
+
+    .refresh {
+        position: absolute;
+        right: -50px;
+        bottom: 0px;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+        background-color: #26a69a;
+        border-radius: 50%;
+        color: #fff;
+        box-shadow: 0 0 10px #26a69a;
+        cursor: pointer;
+    }
+
+    .rotateBg {
+        /*background: url("assets/img/bgM.png") no-repeat center;*/
+        position: absolute;
+        left: 0;
+    }
+
+    .jiesuo {
+        text-align: center;
+        background-color: #26a69a;
+        padding: 10px 0;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .container {
+        position: relative;
+        height: 100%;
+    }
+
+    .rotate {
+        width: 100%;
+        position: absolute;
+        left: 0;
+    }
+
+    .rotateText {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+
+    .logoImg {
+        max-height: 100%;
+        padding: 10px 30px;
+    }
+
+    nav {
+        /*background-color: rgb(240,112,13);*/
+        background-color: #26a69a;
+    }
+</style>
 
 <nav>
     <div class="nav-wrapper">
-        <a href="index.html#" class="brand-logo">剪刀石头布</a>
+        <img src="assets/img/logo.png" alt="" class="logoImg">
+        <a href="index.html#" class="brand-logo text">星云大转盘</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li>
                 <a href="index.html#">首页</a>
@@ -33,12 +145,12 @@
         </ul>
     </div>
 </nav>
-<div class="container">
+<div class="container fix">
     <div class="row" style="margin-top: 20px;">
-        <div class="col offset-s2 s8">
+        <div class="col offset-s2 s8" style="position: relative">
             <div class="file-field input-field">
                 <div class="btn">
-                    <span>点击选择您的密钥文件</span>
+                    <span>选择钱包文件...</span>
                     <input type="file" id="keyfile">
                 </div>
                 <div class="file-path-wrapper">
@@ -46,9 +158,10 @@
                 </div>
             </div>
             <div id="keyfilepassworddiv" style="display: none">
-                <label for="keyfilepassword">请输入您的密钥文件密码</label>
+                <label for="keyfilepassword">你的钱包加密了，好！请输入密码</label>
                 <input placeholder="请输入您的密钥文件密码" class="center-align" id="keyfilepassword" type="password">
             </div>
+            <div class="jiesuo">解锁</div>
             <table class="bordered centered">
                 <tbody>
                 <tr>
@@ -61,147 +174,92 @@
                 </tr>
                 </tbody>
             </table>
+            <div class="refresh">刷新</div>
         </div>
     </div>
-    <div class="row" id="hub">
-        <h4>游戏大厅
-            <small>(最新10场游戏)</small>
-        </h4>
-        <table class="responsive-table centered bordered" id="hubtable">
-            <thead>
-            <tr>
-                <th data-field="id">游戏 ID</th>
-                <th data-field="name">玩家地址</th>
-                <th data-field="price">金额</th>
-                <th data-field="price">游戏状态</th>
-                <th data-field="price"><a class="btn" onclick="refresh()">刷新</a></th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+
+    <div class="rotate">
+
+        <div class="rotateBg">
+            <img src="./assets/img/bg.png" alt="">
+            <img src="./assets/img/arrow.png" alt="" class="arrow" id="lotteryBtn">
+        </div>
+        <div class="rotateText">
+            <div>当前智能合约</div>
+        </div>
+
     </div>
-    <div class="row" id="view">
-        <div class="col s12">
-            <h4>查看游戏</h4>
-        </div>
-        <div class="col offset-s2 s8">
-            <div class="row">
-                <div class="col s10">
-                    <label for="gameid">请输入游戏 ID</label>
-                    <input placeholder="请输入游戏 ID" class="center-align" id="gameid">
-                </div>
-                <div class="col s2">
-                    <a class="btn" onclick="query()">确定</a>
-                </div>
-            </div>
-            <table class="bordered centered">
-                <tbody>
-                <tr>
-                    <td>金额</td>
-                    <td id="thisamount"></td>
-                </tr>
-                <tr>
-                    <td>玩家A地址</td>
-                    <td id="thisaaddress"></td>
-                </tr>
-                <tr>
-                    <td>玩家A出手</td>
-                    <td id="thisaahoice"></td>
-                </tr>
-                <tr>
-                    <td>玩家B地址</td>
-                    <td id="thisbaddress"></td>
-                </tr>
-                <tr>
-                    <td>玩家B出手</td>
-                    <td id="thisbchoice"></td>
-                </tr>
-                <tr>
-                    <td>游戏状态</td>
-                    <td id="thisstatus"></td>
-                </tr>
-                <tr>
-                    <td>可强退时间</td>
-                    <td id="thisendtime"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="col s12">
-            <h4>我的游戏
-                <small><a class="btn right" onclick="mygamerefresh()">刷新</a></small>
-            </h4>
-            <div class="col offset-s2 s8">
-                <pre id="mygames"></pre>
-            </div>
-        </div>
-    </div>
-    <div class="row" id="action">
-        <div class="col s12">
-            <h4>游戏操作</h4>
-        </div>
-        <div class="col offset-s2 s8">
-            <div class="row">
-                <div class="col s12" style="margin-top: 10px;">
-                    <h4>新游戏</h4>
-                    <label for="newamount">金额 （单位：NAS）</label>
-                    <input placeholder="金额 （单位：NAS）" class="center-align" id="newamount">
-                    <label for="newsalt">盐（用于加密你的选择，请务必记住）</label>
-                    <input placeholder="盐（用于加密你的选择，请务必记住）" class="center-align" id="newsalt">
-                    <label for="newchoice">请选择出手</label>
-                    <select id="newchoice">
-                        <option disabled>请选择出手</option>
-                        <option>剪刀</option>
-                        <option>石头</option>
-                        <option>布</option>
-                    </select>
-                    <a class="btn right" onclick="newgame()">确认</a>
-                </div>
-                <div class="col s12" style="margin-top: 10px;">
-                    <h4>参与游戏</h4>
-                    <label for="joinid">请输入游戏 ID</label>
-                    <input placeholder="请输入游戏 ID" class="center-align" id="joinid">
-                    <label for="joinsalt">盐（用于加密你的选择，请务必记住）</label>
-                    <input placeholder="盐（用于加密你的选择，请务必记住）" class="center-align" id="joinsalt">
-                    <label for="joinchoice">请选择出手</label>
-                    <select id="joinchoice">
-                        <option disabled>请选择出手</option>
-                        <option>剪刀</option>
-                        <option>石头</option>
-                        <option>布</option>
-                    </select>
-                    <a class="btn right" onclick="joingame()">确认</a>
-                </div>
-                <div class="col s12" style="margin-top: 10px;">
-                    <h4>公开选项</h4>
-                    <label for="revealid">请输入游戏 ID</label>
-                    <input placeholder="请输入游戏 ID" class="center-align" id="revealid">
-                    <label for="revealsalt">请输入之前的【盐】</label>
-                    <input placeholder="请输入之前的【盐】" class="center-align" id="revealsalt">
-                    <label for="revealchoice">请选择出手</label>
-                    <select id="revealchoice">
-                        <option disabled>请选择出手</option>
-                        <option>剪刀</option>
-                        <option>石头</option>
-                        <option>布</option>
-                    </select>
-                    <a class="btn right" onclick="revealgame()">确认</a>
-                </div>
-                <div class="col s12" style="margin-top: 10px;">
-                    <h4>强行结束</h4>
-                    <label for="endid">请输入游戏 ID</label>
-                    <input placeholder="请输入游戏 ID" class="center-align" id="endid">
-                    <a class="btn right" onclick="endgame()">确认</a>
-                </div>
-            </div>
-        </div>
-    </div>
+
+
 </div>
+
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/md5.js"></script>
 <script src="assets/js/nebulas.js"></script>
 <script src="materialize/js/materialize.js"></script>
 <script src="turnTableIndex.js"></script>
+<script src="assets/js/jQueryRotate.2.2.js"></script>
+<script>
+        $(function () {
+                var timeOut = function () {  //超时函数
+                        $("#lotteryBtn").rotate({
+                                angle: 0,
+                                duration: 10000,
+                                animateTo: 2160, //这里是设置请求超时后返回的角度，所以应该还是回到最原始的位置，2160是因为我要让它转6圈，就是360*6得来的
+                                callback: function () {
+                                        //alert('网络超时')
+                                }
+                        });
+                };
+                var rotateFunc = function (awards, angle, text, value) {  //awards:奖项，angle:奖项对应的角度
+                        $('#lotteryBtn').stopRotate();
+                        $("#lotteryBtn").rotate({
+                                angle: 0,
+                                duration: 5000,
+                                animateTo: angle + 1440, //angle是图片上各奖项对应的角度，1440是我要让指针旋转4圈。所以最后的结束的角度就是这样子^^
+                                callback: function () {
+                                        alert(text);
+                                        // winAward(value);
+                                }
+                        });
+                };
+
+                $("#lotteryBtn").rotate({
+                        bind:
+                                {
+                                        click: function () {
+                                                var time = [0, 1, 2];
+                                                time = time[Math.floor(Math.random() * time.length)];
+                                                if (time == 0) {
+                                                        timeOut(); //网络超时
+                                                        var angle = [67, 112, 202, 292, 337];
+                                                        angle = angle[Math.floor(Math.random() * angle.length)]
+                                                        rotateFunc(0, angle, '很遗憾，这次您未抽中奖')
+                                                }
+                                                if (time == 1) {
+                                                        var data = [1, 2, 3, 0]; //返回的数组
+                                                        data = data[Math.floor(Math.random() * data.length)];
+                                                        if (data == 1) {
+                                                                rotateFunc(1, 157, '恭喜您抽中的一等奖,1nas', 1e18)
+                                                        }
+                                                        if (data == 2) {
+                                                                rotateFunc(2, 247, '恭喜您抽中的二等奖,0.5nas', 0.5e18)
+                                                        }
+                                                        if (data == 3) {
+                                                                rotateFunc(3, 22, '恭喜您抽中的三等奖,0.1nas', 0.1e18)
+                                                        }
+                                                        if (data == 0) {
+                                                                var angle = [67, 112, 202, 292, 337];
+                                                                angle = angle[Math.floor(Math.random() * angle.length)]
+                                                                rotateFunc(0, angle, '很遗憾，这次您未抽中奖')
+                                                        }
+                                                }
+                                        }
+                                }
+
+                });
+
+        })
+</script>
 </body>
 </html>
