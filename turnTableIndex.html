@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>剪刀石头布</title>
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://testnet.nebulas.io">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="images/favicon/mstile-144x144.png">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link href="materialize/css/materialize.css" rel="stylesheet">
+
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+
+<nav>
+    <div class="nav-wrapper">
+        <a href="index.html#" class="brand-logo">剪刀石头布</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li>
+                <a href="index.html#">首页</a>
+            </li>
+            <li>
+                <a href="readme.html">使用说明</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    <div class="row" style="margin-top: 20px;">
+        <div class="col offset-s2 s8">
+            <div class="file-field input-field">
+                <div class="btn">
+                    <span>点击选择您的密钥文件</span>
+                    <input type="file" id="keyfile">
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text">
+                </div>
+            </div>
+            <div id="keyfilepassworddiv" style="display: none">
+                <label for="keyfilepassword">请输入您的密钥文件密码</label>
+                <input placeholder="请输入您的密钥文件密码" class="center-align" id="keyfilepassword" type="password">
+            </div>
+            <table class="bordered centered">
+                <tbody>
+                <tr>
+                    <td>NAS 地址</td>
+                    <td id="address"></td>
+                </tr>
+                <tr>
+                    <td>可用余额<br></td>
+                    <td id="balance"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row" id="hub">
+        <h4>游戏大厅
+            <small>(最新10场游戏)</small>
+        </h4>
+        <table class="responsive-table centered bordered" id="hubtable">
+            <thead>
+            <tr>
+                <th data-field="id">游戏 ID</th>
+                <th data-field="name">玩家地址</th>
+                <th data-field="price">金额</th>
+                <th data-field="price">游戏状态</th>
+                <th data-field="price"><a class="btn" onclick="refresh()">刷新</a></th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="row" id="view">
+        <div class="col s12">
+            <h4>查看游戏</h4>
+        </div>
+        <div class="col offset-s2 s8">
+            <div class="row">
+                <div class="col s10">
+                    <label for="gameid">请输入游戏 ID</label>
+                    <input placeholder="请输入游戏 ID" class="center-align" id="gameid">
+                </div>
+                <div class="col s2">
+                    <a class="btn" onclick="query()">确定</a>
+                </div>
+            </div>
+            <table class="bordered centered">
+                <tbody>
+                <tr>
+                    <td>金额</td>
+                    <td id="thisamount"></td>
+                </tr>
+                <tr>
+                    <td>玩家A地址</td>
+                    <td id="thisaaddress"></td>
+                </tr>
+                <tr>
+                    <td>玩家A出手</td>
+                    <td id="thisaahoice"></td>
+                </tr>
+                <tr>
+                    <td>玩家B地址</td>
+                    <td id="thisbaddress"></td>
+                </tr>
+                <tr>
+                    <td>玩家B出手</td>
+                    <td id="thisbchoice"></td>
+                </tr>
+                <tr>
+                    <td>游戏状态</td>
+                    <td id="thisstatus"></td>
+                </tr>
+                <tr>
+                    <td>可强退时间</td>
+                    <td id="thisendtime"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col s12">
+            <h4>我的游戏
+                <small><a class="btn right" onclick="mygamerefresh()">刷新</a></small>
+            </h4>
+            <div class="col offset-s2 s8">
+                <pre id="mygames"></pre>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="action">
+        <div class="col s12">
+            <h4>游戏操作</h4>
+        </div>
+        <div class="col offset-s2 s8">
+            <div class="row">
+                <div class="col s12" style="margin-top: 10px;">
+                    <h4>新游戏</h4>
+                    <label for="newamount">金额 （单位：NAS）</label>
+                    <input placeholder="金额 （单位：NAS）" class="center-align" id="newamount">
+                    <label for="newsalt">盐（用于加密你的选择，请务必记住）</label>
+                    <input placeholder="盐（用于加密你的选择，请务必记住）" class="center-align" id="newsalt">
+                    <label for="newchoice">请选择出手</label>
+                    <select id="newchoice">
+                        <option disabled>请选择出手</option>
+                        <option>剪刀</option>
+                        <option>石头</option>
+                        <option>布</option>
+                    </select>
+                    <a class="btn right" onclick="newgame()">确认</a>
+                </div>
+                <div class="col s12" style="margin-top: 10px;">
+                    <h4>参与游戏</h4>
+                    <label for="joinid">请输入游戏 ID</label>
+                    <input placeholder="请输入游戏 ID" class="center-align" id="joinid">
+                    <label for="joinsalt">盐（用于加密你的选择，请务必记住）</label>
+                    <input placeholder="盐（用于加密你的选择，请务必记住）" class="center-align" id="joinsalt">
+                    <label for="joinchoice">请选择出手</label>
+                    <select id="joinchoice">
+                        <option disabled>请选择出手</option>
+                        <option>剪刀</option>
+                        <option>石头</option>
+                        <option>布</option>
+                    </select>
+                    <a class="btn right" onclick="joingame()">确认</a>
+                </div>
+                <div class="col s12" style="margin-top: 10px;">
+                    <h4>公开选项</h4>
+                    <label for="revealid">请输入游戏 ID</label>
+                    <input placeholder="请输入游戏 ID" class="center-align" id="revealid">
+                    <label for="revealsalt">请输入之前的【盐】</label>
+                    <input placeholder="请输入之前的【盐】" class="center-align" id="revealsalt">
+                    <label for="revealchoice">请选择出手</label>
+                    <select id="revealchoice">
+                        <option disabled>请选择出手</option>
+                        <option>剪刀</option>
+                        <option>石头</option>
+                        <option>布</option>
+                    </select>
+                    <a class="btn right" onclick="revealgame()">确认</a>
+                </div>
+                <div class="col s12" style="margin-top: 10px;">
+                    <h4>强行结束</h4>
+                    <label for="endid">请输入游戏 ID</label>
+                    <input placeholder="请输入游戏 ID" class="center-align" id="endid">
+                    <a class="btn right" onclick="endgame()">确认</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/md5.js"></script>
+<script src="assets/js/nebulas.js"></script>
+<script src="materialize/js/materialize.js"></script>
+<script src="turnTableIndex.js"></script>
+</body>
+</html>
