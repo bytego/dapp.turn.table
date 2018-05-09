@@ -6,10 +6,13 @@ var account = null;
 var keyfile = null;
 var Transaction = require("nebulas").Transaction;
 var neb = new Neb();
-neb.setRequest(new HttpRequest("https://testnet.nebulas.io"));
+// neb.setRequest(new HttpRequest("https://testnet.nebulas.io"));
+neb.setRequest(new HttpRequest("https://mainnet.nebulas.io"));
 
 //星云大转盘智能合约
-var contractAddress = "n1smvuknBYQmbPKs8eEpQb7DhHbaw7Wfd9y";
+// var contractAddress = "n1smvuknBYQmbPKs8eEpQb7DhHbaw7Wfd9y";
+//主网
+var contractAddress = "n1zq28Ko8towJhvkAbSHm7eW5HyTQ5a3pZ1";
 var chainid = 1;
 
 $('#keyfile').change(function (e) {
@@ -27,7 +30,8 @@ $('#keyfile').change(function (e) {
         }
     }
 });
-$('#keyfilepassword').change(function (e) {
+
+function unlock(e) {
     Materialize.toast('正在查询地址信息', 3000);
     account = new Account();
     try {
@@ -39,12 +43,18 @@ $('#keyfilepassword').change(function (e) {
     $('#address').text(account.getAddressString());
     neb.api.getAccountState({address: account.getAddressString()}).then(function (state) {
         $('#balance').text(state.balance / 1e18 + ' NAS');
-        Materialize.toast('信息查询成功', 3000);
+        Materialize.toast('钱包余额查询成功', 3000);
     });
-});
+}
+//
+// $('#keyfilepassword').change(function (e) {
+//
+// });
 
 //智能合约充值
-function reCharge(amount) {
+function reCharge() {
+
+    var amount = $("#reCharge_number").val();
 
     neb.api.call({
         chainID: chainid,
@@ -151,7 +161,7 @@ function afterAward(value) {
         nonce: 0,
         gasPrice: 1000000,
         gasLimit: 2000000,
-        contract: {function: "afterAward", args: ""}
+        contract: {function: "afterAward", args: JSON.stringify([value * 1e18])}
     }).then(function (call) {
         if (call.execute_err === '') {
             neb.api.getAccountState({address: account.getAddressString()}).then(function (state) {
