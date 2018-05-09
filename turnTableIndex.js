@@ -11,7 +11,8 @@ neb.setRequest(new HttpRequest("https://testnet.nebulas.io"));
 
 //星云大转盘智能合约
 //测试网
-var contractAddress = "n1smvuknBYQmbPKs8eEpQb7DhHbaw7Wfd9y";
+// var contractAddress = "n1smvuknBYQmbPKs8eEpQb7DhHbaw7Wfd9y";
+var contractAddress = "n221dc3Xp66hpFxtB9D8ft7ju5EDPyDEvMB";
 var chainid = 1001;
 //主网
 // var contractAddress = "n1zq28Ko8towJhvkAbSHm7eW5HyTQ5a3pZ1";
@@ -49,6 +50,8 @@ function unlock(e) {
 
         balanceOf();
         getContractBalance();
+        getUserCount();
+        getAllUser();
 
     });
 }
@@ -57,6 +60,11 @@ function unlock(e) {
 function reCharge() {
 
     var amount = $("#reCharge_number").val();
+
+    if(amount < 0.01){
+        Materialize.toast('充值金额金额0.01起', 2000);
+        return;
+    }
 
     neb.api.call({
         chainID: chainid,
@@ -73,8 +81,6 @@ function reCharge() {
                 $('#balance').text(state.balance / 1e18 + ' NAS');
                 Materialize.toast('个人钱包余额更新成功', 2000);
 
-                balanceOf();
-                getContractBalance();
                 var tx = new Transaction({
                     chainID: chainid,
                     from: account,
@@ -87,7 +93,9 @@ function reCharge() {
                 });
                 tx.signTransaction();
                 neb.api.sendRawTransaction({data: tx.toProtoString()}).then(function (tx) {
-                    Materialize.toast('TXid: ' + tx.txhash, 5000);
+
+                    Materialize.toast('区块打包中，15秒后自动刷新,或者手动刷新', 5000);
+                    setTimeout("queryInfoAuto()","20000");
                 });
             });
         } else {
@@ -111,8 +119,16 @@ function balanceOf() {
     }).then(function (data) {
         var result = JSON.parse(data.result);
 
-        Materialize.toast('用户游戏账户个人余额更新成功', 2000);
-        $('#contract_balance').text(result.balance/1e18 + 'NAS');
+        Materialize.toast('游戏账户个人余额更新成功', 2000);
+
+        var balance = 0;
+        if(result){
+            balance = result.balance;
+        }
+
+        $('#contract_balance').text(balance/1e18 + 'NAS');
+        $('#contract_balance_input').val(balance/1e18);
+
     });
 
 }
@@ -132,7 +148,7 @@ function getContractBalance() {
     }).then(function (data) {
         var result = JSON.parse(data.result);
 
-        Materialize.toast('当前智能合约奖金池更新成功', 2000);
+        Materialize.toast('智能合约奖金池更新成功', 2000);
         $('#current_contract_balance').text(result/1e18 + 'NAS');
     });
 
@@ -154,25 +170,73 @@ function afterAward(value) {
         if (call.execute_err === '') {
             neb.api.getAccountState({address: account.getAddressString()}).then(function (state) {
                 $('#balance').text(state.balance / 1e18 + ' NAS');
+
                 var tx = new Transaction({
                     chainID: chainid,
                     from: account,
                     to: contractAddress,
-                    value: amount * 1e18,
+                    value: 0,
                     nonce: parseInt(state.nonce) + 1,
                     gasPrice: 1000000,
                     gasLimit: 2000000,
-                    contract: {function: "afterAward", args: ""}
+                    contract: {function: "afterAward", args: JSON.stringify([value * 1e18])}
                 });
                 tx.signTransaction();
                 neb.api.sendRawTransaction({data: tx.toProtoString()}).then(function (tx) {
-                    Materialize.toast('TXid: ' + tx.txhash, 5000);
                 });
+
+                Materialize.toast('区块打包中，15秒后自动刷新,或者手动刷新', 5000);
+                setTimeout("queryInfoAuto()","20000");
+
             });
         } else {
             Materialize.toast(call.execute_err, 3000);
         }
     });
+}
+
+
+//提现所有
+function withDrawAll() {
+
+    neb.api.call({
+        chainID: chainid,
+        from: account.getAddressString(),
+        to: contractAddress,
+        value: 0,
+        nonce: 0,
+        gasPrice: 1000000,
+        gasLimit: 2000000,
+        contract: {function: "withDrawAll", args: ""}
+    }).then(function (call) {
+        if (call.execute_err === '') {
+            neb.api.getAccountState({address: account.getAddressString()}).then(function (state) {
+                $('#balance').text(state.balance / 1e18 + ' NAS');
+                Materialize.toast('个人钱包余额更新成功', 2000);
+
+                var tx = new Transaction({
+                    chainID: chainid,
+                    from: account,
+                    to: contractAddress,
+                    value: 0,
+                    nonce: parseInt(state.nonce) + 1,
+                    gasPrice: 1000000,
+                    gasLimit: 2000000,
+                    contract: {function: "withDrawAll", args: ""}
+                });
+                tx.signTransaction();
+                neb.api.sendRawTransaction({data: tx.toProtoString()}).then(function (tx) {
+                });
+
+                Materialize.toast('区块打包中，15秒后自动刷新,或者手动刷新', 5000);
+                setTimeout("queryInfoAuto()","20000");
+
+            });
+        } else {
+            Materialize.toast(call.execute_err, 3000);
+        }
+    });
+
 }
 
 //获取所有用户信息
@@ -190,7 +254,73 @@ function getAllUser() {
     }).then(function (data) {
         var result = JSON.parse(data.result);
 
-        $('#getAllUser').text(result);
+        console.log(result);
+
+        var ul_txt = '';
+        result.forEach(function (re,i) {
+            console.log(result[i]);
+
+            ul_txt += '<li>' + result[i] + '</li>';
+        })
+
+        $('#getAllUser').html(ul_txt);
     });
+}
+
+//当前参与人数
+function getUserCount() {
+
+    neb.api.call({
+        chainID: chainid,
+        from: account.getAddressString(),
+        to: contractAddress,
+        value: 0,
+        nonce: 0,
+        gasPrice: 1000000,
+        gasLimit: 2000000,
+        contract: {function: "getUserCount", args: ""}
+    }).then(function (data) {
+        var result = JSON.parse(data.result);
+
+        console.log(result);
+
+        $('#getUserCount').text(result + '人');
+    });
+}
+
+
+function test() {
+
+    var result = [];
+    result.push(111);
+    result.push(222);
+
+    console.log(result);
+
+    result.forEach(function (re,i) {
+
+        console.log(result[i]);
+
+    })
 
 }
+
+//自动刷新
+function queryInfoAuto() {
+
+    balanceOf();
+    getContractBalance();
+    getUserCount();
+    getAllUser();
+};
+
+//手动刷新
+function queryInfo() {
+
+    Materialize.toast('手动刷新，没有到账，请重试', 2000);
+
+    balanceOf();
+    getContractBalance();
+    getUserCount();
+    getAllUser();
+};

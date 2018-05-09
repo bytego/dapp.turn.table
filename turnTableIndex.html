@@ -104,11 +104,25 @@
         cursor: pointer;
     }
 
+    .refresh2 {
+        position: absolute;
+        right: -100px;
+        bottom: 65px;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+        background-color: #26a69a;
+        border-radius: 50%;
+        color: #fff;
+        box-shadow: 0 0 10px #26a69a;
+        cursor: pointer;
+    }
 
     .rotateBg {
         /*background: url("assets/img/bgM.png") no-repeat center;*/
         position: absolute;
-        left: 0;
+        left: -100px;
     }
 
     .jiesuo {
@@ -132,13 +146,14 @@
 
     .rotateText {
         position: absolute;
-        right: 200px;
+        right: -50px;
         top: 0;
+        width: 500px;
     }
 
     .logoImg {
         max-height: 100%;
-        padding: 10px 30px;
+        padding: 7px 30px;
     }
 
     nav {
@@ -155,13 +170,13 @@
 <nav>
     <div class="nav-wrapper">
         <img src="assets/img/logo.png" alt="" class="logoImg">
-        <a href="index.html#" class="brand-logo text">星云大转盘</a>
+        <a href="#" class="brand-logo text">星云大转盘</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li>
                 <a href="index.html#">智能合约</a>
             </li>
             <li>
-                <a href="readme.html">使用说明</a>
+                <a href="#" title="使用前请充值">使用说明</a>
             </li>
         </ul>
     </div>
@@ -193,10 +208,12 @@
                     <td>钱包余额<br></td>
                     <td id="balance"></td>
                 </tr>
-                <div class="refresh" onclick="unlock()">提现</div>
+                <div class="refresh" onclick="queryInfo()">刷新</div>
+                <div class="refresh2" onclick="withDrawAll()">提现</div>
                 <tr>
                     <td>游戏账户智能合约余额<br></td>
                     <td id="contract_balance"></td>
+                    <input type="hidden" id="contract_balance_input"/>
                 </tr>
                 </tbody>
             </table>
@@ -212,12 +229,11 @@
             <img src="./assets/img/arrow.png" alt="" class="arrow" id="lotteryBtn">
         </div>
         <div class="rotateText">
-            <div><span>当前智能合约:</span><span id="current_contract_balance"></span></div>
+            <div><span>当前智能合约总金额 : </span><span id="current_contract_balance"></span></div>
+            <div><span>游戏总参与用户 : </span><span id="getUserCount"></span></div>
             <div>
-                <ul class="persons">
-                    <li>1</li>
-                    <li>2</li>
-                    <li>3</li>
+                <ul class="persons" id="getAllUser">
+
                 </ul>
             </div>
         </div>
@@ -234,7 +250,9 @@
 <script src="turnTableIndex.js"></script>
 <script src="assets/js/jQueryRotate.2.2.js"></script>
 <script>
+
         $(function () {
+
                 var timeOut = function () {  //超时函数
                         $("#lotteryBtn").rotate({
                                 angle: 0,
@@ -252,8 +270,8 @@
                                 duration: 5000,
                                 animateTo: angle + 1440, //angle是图片上各奖项对应的角度，1440是我要让指针旋转4圈。所以最后的结束的角度就是这样子^^
                                 callback: function () {
-                                        alert(text);
-                                        // winAward(value);
+                                    Materialize.toast(text, 5000);
+                                        afterAward(value);
                                 }
                         });
                 };
@@ -262,30 +280,39 @@
                         bind:
                                 {
                                         click: function () {
+                                            // queryInfo()
+
+                                            var amount = $("#contract_balance_input").val();
+
+                                            if(amount < 0.01){
+                                                Materialize.toast('余额不足，请充值', 3000);
+                                                return;
+                                            }
+
                                                 var time = [0, 1, 2];
                                                 time = time[Math.floor(Math.random() * time.length)];
                                                 if (time == 0) {
                                                         timeOut(); //网络超时
                                                         var angle = [67, 112, 202, 292, 337];
                                                         angle = angle[Math.floor(Math.random() * angle.length)]
-                                                        rotateFunc(0, angle, '很遗憾，这次您未抽中奖')
+                                                        rotateFunc(0, angle, '很遗憾，这次您未抽中奖', -0.01);
                                                 }
                                                 if (time == 1) {
                                                         var data = [1, 2, 3, 0]; //返回的数组
                                                         data = data[Math.floor(Math.random() * data.length)];
                                                         if (data == 1) {
-                                                                rotateFunc(1, 157, '恭喜您抽中的一等奖,1nas', 1e18)
+                                                                rotateFunc(1, 157, '恭喜您抽中的一等奖,0.03nas', 0.03)
                                                         }
                                                         if (data == 2) {
-                                                                rotateFunc(2, 247, '恭喜您抽中的二等奖,0.5nas', 0.5e18)
+                                                                rotateFunc(2, 247, '恭喜您抽中的二等奖,0.02nas', 0.02)
                                                         }
                                                         if (data == 3) {
-                                                                rotateFunc(3, 22, '恭喜您抽中的三等奖,0.1nas', 0.1e18)
+                                                                rotateFunc(3, 22, '恭喜您抽中的三等奖,0.01nas', 0.01)
                                                         }
                                                         if (data == 0) {
                                                                 var angle = [67, 112, 202, 292, 337];
                                                                 angle = angle[Math.floor(Math.random() * angle.length)]
-                                                                rotateFunc(0, angle, '很遗憾，这次您未抽中奖')
+                                                                rotateFunc(0, angle, '很遗憾，这次您未抽中奖', -0.01);
                                                         }
                                                 }
                                         }
