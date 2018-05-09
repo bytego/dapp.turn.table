@@ -6,17 +6,16 @@ var account = null;
 var keyfile = null;
 var Transaction = require("nebulas").Transaction;
 var neb = new Neb();
-// neb.setRequest(new HttpRequest("https://testnet.nebulas.io"));
-neb.setRequest(new HttpRequest("https://testnet.nebulas.io"));
 
-//星云大转盘智能合约
 //测试网
-// var contractAddress = "n1smvuknBYQmbPKs8eEpQb7DhHbaw7Wfd9y";
-var contractAddress = "n221dc3Xp66hpFxtB9D8ft7ju5EDPyDEvMB";
-var chainid = 1001;
+// neb.setRequest(new HttpRequest("https://testnet.nebulas.io"));
+// var contractAddress = "n221dc3Xp66hpFxtB9D8ft7ju5EDPyDEvMB";
+// var chainid = 1001;
+
 //主网
-// var contractAddress = "n1zq28Ko8towJhvkAbSHm7eW5HyTQ5a3pZ1";
-// var chainid = 1;
+neb.setRequest(new HttpRequest("https://mainnet.nebulas.io"));
+var contractAddress = "n1iaXmodaw3Nbwqg4ViJjjhuCNA2exKBwxi";
+var chainid = 1;
 
 $('#keyfile').change(function (e) {
     var $this = $(this), file = e.target.files[0], fr = new FileReader();
