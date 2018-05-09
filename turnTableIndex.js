@@ -7,13 +7,15 @@ var keyfile = null;
 var Transaction = require("nebulas").Transaction;
 var neb = new Neb();
 // neb.setRequest(new HttpRequest("https://testnet.nebulas.io"));
-neb.setRequest(new HttpRequest("https://mainnet.nebulas.io"));
+neb.setRequest(new HttpRequest("https://testnet.nebulas.io"));
 
 //星云大转盘智能合约
-// var contractAddress = "n1smvuknBYQmbPKs8eEpQb7DhHbaw7Wfd9y";
+//测试网
+var contractAddress = "n1smvuknBYQmbPKs8eEpQb7DhHbaw7Wfd9y";
+var chainid = 1001;
 //主网
-var contractAddress = "n1zq28Ko8towJhvkAbSHm7eW5HyTQ5a3pZ1";
-var chainid = 1;
+// var contractAddress = "n1zq28Ko8towJhvkAbSHm7eW5HyTQ5a3pZ1";
+// var chainid = 1;
 
 $('#keyfile').change(function (e) {
     var $this = $(this), file = e.target.files[0], fr = new FileReader();
@@ -32,7 +34,7 @@ $('#keyfile').change(function (e) {
 });
 
 function unlock(e) {
-    Materialize.toast('正在查询地址信息', 3000);
+    Materialize.toast('正在查询钱包信息', 3000);
     account = new Account();
     try {
         account.fromKey(keyfile, $('#keyfilepassword')[0].value.trim());
@@ -44,12 +46,12 @@ function unlock(e) {
     neb.api.getAccountState({address: account.getAddressString()}).then(function (state) {
         $('#balance').text(state.balance / 1e18 + ' NAS');
         Materialize.toast('钱包余额查询成功', 3000);
+
+        balanceOf();
+        getContractBalance();
+
     });
 }
-//
-// $('#keyfilepassword').change(function (e) {
-//
-// });
 
 //智能合约充值
 function reCharge() {
@@ -69,6 +71,10 @@ function reCharge() {
         if (call.execute_err === '') {
             neb.api.getAccountState({address: account.getAddressString()}).then(function (state) {
                 $('#balance').text(state.balance / 1e18 + ' NAS');
+                Materialize.toast('个人钱包余额更新成功', 2000);
+
+                balanceOf();
+                getContractBalance();
                 var tx = new Transaction({
                     chainID: chainid,
                     from: account,
@@ -105,27 +111,8 @@ function balanceOf() {
     }).then(function (data) {
         var result = JSON.parse(data.result);
 
-        $('#balanceOf').text(result);
-    });
-
-}
-
-//获取所有用户信息
-function getAllUser() {
-
-    neb.api.call({
-        chainID: chainid,
-        from: account.getAddressString(),
-        to: contractAddress,
-        value: 0,
-        nonce: 0,
-        gasPrice: 1000000,
-        gasLimit: 2000000,
-        contract: {function: "getAllUser", args: ""}
-    }).then(function (data) {
-        var result = JSON.parse(data.result);
-
-        $('#getAllUser').text(result);
+        Materialize.toast('用户游戏账户个人余额更新成功', 2000);
+        $('#contract_balance').text(result.balance/1e18 + 'NAS');
     });
 
 }
@@ -145,7 +132,8 @@ function getContractBalance() {
     }).then(function (data) {
         var result = JSON.parse(data.result);
 
-        $('#getContractBalance').text(result);
+        Materialize.toast('当前智能合约奖金池更新成功', 2000);
+        $('#current_contract_balance').text(result/1e18 + 'NAS');
     });
 
 }
@@ -184,6 +172,25 @@ function afterAward(value) {
         } else {
             Materialize.toast(call.execute_err, 3000);
         }
+    });
+}
+
+//获取所有用户信息
+function getAllUser() {
+
+    neb.api.call({
+        chainID: chainid,
+        from: account.getAddressString(),
+        to: contractAddress,
+        value: 0,
+        nonce: 0,
+        gasPrice: 1000000,
+        gasLimit: 2000000,
+        contract: {function: "getAllUser", args: ""}
+    }).then(function (data) {
+        var result = JSON.parse(data.result);
+
+        $('#getAllUser').text(result);
     });
 
 }
