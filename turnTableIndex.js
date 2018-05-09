@@ -60,8 +60,8 @@ function reCharge() {
 
     var amount = $("#reCharge_number").val();
 
-    if(amount < 0.01){
-        Materialize.toast('充值金额金额0.01起', 2000);
+    if(amount < 0.001){
+        Materialize.toast('充值金额金额0.001NAS起', 2000);
         return;
     }
 
