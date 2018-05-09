@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>星云大转盘</title>
+    <title>星云(幸运)转盘小游戏</title>
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://mainnet.nebulas.io">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -146,7 +146,7 @@
 
     .rotateText {
         position: absolute;
-        right: -50px;
+        right: -80px;
         top: 0;
         width: 500px;
     }
@@ -170,7 +170,7 @@
 <nav>
     <div class="nav-wrapper">
         <img src="assets/img/logo.png" alt="" class="logoImg">
-        <a href="#" class="brand-logo text">星云大转盘</a>
+        <a href="#" class="brand-logo text" style="font-size:1.5rem">星云(幸运)转盘小游戏</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li>
                 <a href="https://explorer.nebulas.io/#/tx/6c1dd97b1eb2e4e26643e920e09da8614d10e5ee1639ca6d53a5500c589344db">智能合约</a>
@@ -226,8 +226,9 @@
             <img src="./assets/img/arrow.png" alt="" class="arrow" id="lotteryBtn">
         </div>
         <div class="rotateText">
-            <div><span>当前智能合约总金额 : </span><span id="current_contract_balance"></span></div>
-            <div><span>游戏总参与用户 : </span><span id="getUserCount"></span></div>
+            <div><span style="color: #26a69a">星云小游戏规则 : </span><span>每次抽奖消耗0.01NAS；奖品：一等奖：0.03NAS；二等奖：0.02NAS；三等奖： 0.01NAS；基于星云链，安全可靠，娱乐为主；</span></div>
+            <div><span style="color: #26a69a">智能合约总金额 : </span><span id="current_contract_balance"></span></div>
+            <div><span style="color: #26a69a">游戏总参与用户 : </span><span id="getUserCount"></span></div>
             <div>
                 <ul class="persons" id="getAllUser">
 
